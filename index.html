@@ -2,9 +2,23 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MAKE FUTURE | 未来创造者</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIX · Liquid Glass</title>
     <style>
+        :root {
+            --bg-deep: #08090d;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #eceef2;
+            --text-secondary: #9a9ca8;
+            --accent: #6b8cff;
+            --radius-lg: 32px;
+            --radius-md: 20px;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            --glass-blur: blur(24px) saturate(180%);
+            --dock-height: 70px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,525 +26,579 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
-            background-color: #05070a;
-            color: #eef5ff;
+            background: var(--bg-deep);
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px calc(40px + var(--dock-height) + 24px);
+            position: relative;
             overflow-x: hidden;
         }
 
-        /* 平滑滚动 */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Canvas 背景层 */
-        #bg-canvas {
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: -20%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(107, 140, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(160, 120, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(255, 110, 160, 0.04) 0%, transparent 50%);
+            pointer-events: none;
             z-index: 0;
-            display: block;
         }
 
-        /* 内容层 */
-        .content {
+        .main-grid {
             position: relative;
-            z-index: 10;
-            min-height: 100vh;
-        }
-
-        /* Hero 区域 */
-        .hero-section {
-            height: 100vh;
+            z-index: 1;
+            max-width: 860px;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 36px;
+        }
+
+        .top-bar {
+            display: flex;
             align-items: center;
-            text-align: center;
-            backdrop-filter: blur(2px);
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
-        }
-
-        .hero-title {
-            font-size: clamp(2.8rem, 10vw, 5.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #FFFFFF, #8BCBFF, #4A90E2);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(74,144,226,0.3);
-            margin-bottom: 1rem;
-        }
-
-        .hero-sub {
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            font-weight: 400;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: #b0e0ff;
-            margin-bottom: 2.5rem;
-            word-break: keep-all;
-        }
-
-        .hero-desc {
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            opacity: 0.85;
-            font-weight: 300;
-            backdrop-filter: blur(4px);
-            padding: 0 1rem;
-        }
-
-        .btn-primary {
-            background: rgba(20, 30, 55, 0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(74, 144, 226, 0.8);
-            color: #e0f0ff;
-            padding: 0.9rem 2.4rem;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(74,144,226,0.2);
-        }
-
-        .btn-primary:hover {
-            background: rgba(74, 144, 226, 0.25);
-            border-color: #fff;
-            box-shadow: 0 0 25px rgba(74,144,226,0.6);
-            transform: scale(1.02);
-            letter-spacing: 0.15em;
-        }
-
-        /* 内容区块 - 简介区域 */
-        .insight-section {
-            padding: 5rem 2rem;
-            background: rgba(5, 7, 12, 0.85);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(74,144,226,0.3);
-            border-bottom: 1px solid rgba(74,144,226,0.3);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2.2rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 3rem;
-            letter-spacing: -0.01em;
-            background: linear-gradient(120deg, #fff, #6cb2eb);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .card-grid {
-            display: flex;
+            justify-content: space-between;
             flex-wrap: wrap;
-            gap: 2rem;
-            justify-content: center;
+            gap: 20px;
         }
 
-        .card {
-            background: rgba(15, 25, 45, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 2rem 1.8rem;
-            width: 280px;
-            transition: transform 0.2s ease, border-color 0.2s;
-            border: 1px solid rgba(74,144,226,0.3);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: #4A90E2;
-            box-shadow: 0 20px 35px -12px rgba(74,144,226,0.2);
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.8rem;
-            font-weight: 500;
-        }
-
-        .card p {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            opacity: 0.8;
-        }
-
-        .footer-note {
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            color: #6c8db0;
-            background: rgba(0,0,0,0.6);
-        }
-
-        /* 滚动指示器 */
-        .scroll-hint {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+        .brand {
             display: flex;
-            flex-direction: column;
+            align-items: baseline;
+            gap: 14px;
+        }
+
+        .brand-label {
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .brand-tix {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            background: linear-gradient(135deg, #dfe7ff 0%, #9db5ff 50%, #c3b8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 24px rgba(130, 150, 255, 0.45));
+            line-height: 1;
+        }
+
+        .xi-tag {
+            display: flex;
             align-items: center;
             gap: 8px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 8px 18px 8px 12px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            transition: all 0.3s ease;
+            text-decoration: none;
             cursor: pointer;
-            z-index: 15;
         }
-        .scroll-hint span {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
+        .xi-tag:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 28px rgba(130, 120, 255, 0.15);
+            color: #d4d6e0;
         }
-        .scroll-hint .mouse {
-            width: 26px;
-            height: 40px;
-            border: 2px solid #8bcbff;
-            border-radius: 20px;
-            position: relative;
-        }
-        .scroll-hint .mouse::after {
-            content: '';
-            width: 2px;
+        .xi-dot {
+            width: 8px;
             height: 8px;
-            background: #8bcbff;
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-            animation: scrollWheel 1.5s infinite;
+            border-radius: 50%;
+            background: #b3a3ff;
+            box-shadow: 0 0 12px #a78bfa;
+            animation: softPulse 3s ease-in-out infinite;
         }
-        @keyframes scrollWheel {
-            0% { opacity: 1; transform: translateX(-50%) translateY(0);}
-            80% { opacity: 0; transform: translateX(-50%) translateY(12px);}
-            100% { opacity: 1; transform: translateX(-50%) translateY(0);}
+        @keyframes softPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
         }
 
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .card {
-                width: 100%;
-                max-width: 320px;
-            }
-            .hero-sub {
-                letter-spacing: 0.2em;
-            }
+        .liquid-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .liquid-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .liquid-card>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .nav-card {
+            padding: 30px 28px 26px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .nav-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 32px 60px -12px rgba(0, 0, 0, 0.65),
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                0 0 40px rgba(107, 140, 255, 0.15);
+        }
+        .nav-card .icon { font-size: 2rem; margin-bottom: 4px; }
+        .nav-card h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: 0.02em; }
+        .nav-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+        .card-arrow {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 6px;
+            transition: gap 0.3s ease;
+        }
+        .nav-card:hover .card-arrow { gap: 12px; }
+
+        .ai-panel {
+            padding: 28px 30px;
+            scroll-margin-top: 100px;
+        }
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .ai-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 14px #4ade80;
+        }
+        .ai-header h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.03em; }
+        .chat-window {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            min-height: 140px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 18px;
+        }
+        .msg {
+            padding: 10px 16px;
+            border-radius: 16px;
+            max-width: 85%;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+        .msg.ai {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #cfd1dc;
+        }
+        .msg.user {
+            align-self: flex-end;
+            background: rgba(107, 140, 255, 0.18);
+            border: 1px solid rgba(107, 140, 255, 0.3);
+            color: #e2e7ff;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .input-row input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 12px 18px;
+            color: var(--text-primary);
+            font-size: 0.88rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-row input:focus {
+            border-color: rgba(107, 140, 255, 0.45);
+            box-shadow: 0 0 24px rgba(107, 140, 255, 0.1);
+        }
+        .input-row button {
+            background: rgba(107, 140, 255, 0.12);
+            border: 1px solid rgba(107, 140, 255, 0.3);
+            color: #cbd2ff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.88rem;
+            cursor: pointer;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+            letter-spacing: 0.03em;
+        }
+        .input-row button:hover {
+            background: rgba(107, 140, 255, 0.22);
+            border-color: rgba(107, 140, 255, 0.55);
+            box-shadow: 0 0 28px rgba(107, 140, 255, 0.2);
+        }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            padding: 7px 16px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.18);
+            color: #d0d4e0;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.4;
+            letter-spacing: 0.06em;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+        }
+        .footer a { color: inherit; text-decoration: none; transition: opacity 0.3s; }
+        .footer a:hover { opacity: 0.8; }
+
+        /* 底部 Dock */
+        .dock-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            background: rgba(20, 20, 30, 0.45);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        .dock-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+            position: relative;
+            border: none;
+            outline: none;
+        }
+        .dock-item:hover {
+            transform: scale(1.25);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .dock-item:active {
+            transform: scale(1.1);
+            transition: 0.1s;
+        }
+
+        .dock-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 5px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            z-index: 10;
+        }
+        .dock-tooltip.show { opacity: 1; }
+
+        @media (max-width: 600px) {
+            .brand-tix { font-size: 3rem; }
+            .cards-row { grid-template-columns: 1fr; }
+            .main-grid { gap: 28px; }
+            .dock-container { gap: 2px; padding: 6px 12px; border-radius: 24px; }
+            .dock-item { width: 42px; height: 42px; font-size: 1.3rem; border-radius: 14px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Three.js Canvas 背景 -->
-    <canvas id="bg-canvas"></canvas>
-
-    <!-- 前景内容 -->
-    <div class="content">
-        <section class="hero-section">
-            <h1 class="hero-title">MAKE FUTURE</h1>
-            <div class="hero-sub">CREATE BEYOND LIMITS</div>
-            <div class="hero-desc">
-                我们构筑下一个世代的数字维度 — 融合人工智能、沉浸交互与极简未来主义。
+    <div class="main-grid">
+        <div class="top-bar">
+            <div class="brand">
+                <span class="brand-label">未来制造</span>
+                <h1 class="brand-tix">TIX</h1>
             </div>
-            <button class="btn-primary" id="exploreBtn">探索未来 →</button>
-            <div class="scroll-hint" id="scrollHint">
-                <div class="mouse"></div>
-                <span>SCROLL</span>
-            </div>
-        </section>
+            <a class="xi-tag" href="https://www.douyin.com/user/self?from_tab_name=main" target="_blank" rel="noopener noreferrer" title="打开抖音 · 矽忈">
+                <span class="xi-dot"></span>
+                <span>抖音 · 矽忈</span>
+            </a>
+        </div>
 
-        <section class="insight-section" id="insightSection">
-            <div class="container">
-                <div class="section-title">✦ 创 新 理 念 ✦</div>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">🌀</div>
-                        <h3>AI 原生</h3>
-                        <p>从底层融合神经网络，让创造力与算法共生，构建自适应数字生态。</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">🌌</div>
-                        <h3>沉浸体验</h3>
-                        <p>实时3D引擎驱动，空间音频与动态交互，打造无界感官场域。</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">⚡</div>
-                        <h3>极简未来</h3>
-                        <p>剥离冗余，保留本质。用纯粹的技术美学，定义明日的视觉语言。</p>
-                    </div>
-                </div>
+        <div class="cards-row">
+            <a class="liquid-card nav-card" href="https://tixmakefuture.github.io/actualuse" target="_blank" rel="noopener noreferrer">
+                <span class="icon">🌐</span>
+                <h3>正式版 · Actual</h3>
+                <p>稳定版本，完整功能，适合日常使用</p>
+                <span class="card-arrow">进入 <span>→</span></span>
+            </a>
+            <a class="liquid-card nav-card" href="https://tixmakefuture.github.io/beta" target="_blank" rel="noopener noreferrer">
+                <span class="icon">🧪</span>
+                <h3>测试版 · Beta</h3>
+                <p>尝鲜预览，最新功能内测体验</p>
+                <span class="card-arrow">进入 <span>→</span></span>
+            </a>
+            <!-- 小游戏卡片（占位页面） -->
+            <a class="liquid-card nav-card" href="https://mcjs.cc" target="_blank" rel="noopener noreferrer">
+                <span class="icon">🎮</span>
+                <h3>小游戏</h3>
+                <p>轻松一刻，即将上线</p>
+                <span class="card-arrow">进入 <span>→</span></span>
+            </a>
+        </div>
+
+        <div class="liquid-card ai-panel" id="aiSection">
+            <div class="ai-header">
+                <span class="ai-status"></span>
+                <h2>TIX 智能指引</h2>
             </div>
-        </section>
-        
-        <div class="footer-note">
-            ✦  FUTURE IS NOW  |  BEYOND THE PROTOTYPE  ✦
+            <div class="chat-window" id="chatArea">
+                <div class="msg ai">👋 你好！我是 TIX 助手，可以指引你使用平台，了解版本区别，或解答关于矽忈的问题。</div>
+            </div>
+            <div class="input-row">
+                <input type="text" id="chatInput" placeholder="输入你的问题…" autocomplete="off" />
+                <button id="sendBtn">发送</button>
+            </div>
+            <div class="chips" id="quickChips">
+                <span class="chip" data-msg="网站介绍">📌 网站介绍</span>
+                <span class="chip" data-msg="版本区别">🔄 版本区别</span>
+                <span class="chip" data-msg="快速上手">🚀 快速上手</span>
+                <span class="chip" data-msg="关于矽忈">👤 关于矽忈</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span>© 2026 TIX · 未来制造</span>
+            <a href="https://tixmakefuture.github.io/actualuse" target="_blank" rel="noopener noreferrer">正式版</a>
+            <a href="https://tixmakefuture.github.io/beta" target="_blank" rel="noopener noreferrer">测试版</a>
+            <span>抖音 · 矽忈</span>
         </div>
     </div>
 
-    <!-- 引入Three.js，保持高效简洁但具有未来感 -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
-    </script>
+    <!-- 底部 Dock 栏 -->
+    <div class="dock-container" id="dockContainer">
+        <a class="dock-item" href="https://tixmakefuture.github.io/actualuse" target="_blank" rel="noopener noreferrer" data-label="正式版">🌐</a>
+        <a class="dock-item" href="https://tixmakefuture.github.io/beta" target="_blank" rel="noopener noreferrer" data-label="测试版">🧪</a>
+        <button class="dock-item" id="aiDockBtn" data-label="AI 指引">🤖</button>
+        <a class="dock-item" href="https://www.douyin.com/user/self?from_tab_name=main" target="_blank" rel="noopener noreferrer" data-label="抖音 · 矽忈">👤</a>
+    </div>
 
-    <script type="module">
-        import * as THREE from 'three';
+    <script>
+        (function() {
+            // AI 聊天逻辑
+            const chatArea = document.getElementById('chatArea');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const chips = document.querySelectorAll('.chip');
 
-        // --- 初始化场景、相机、渲染器 (背景效果: 科技感旋转环 + 粒子场, 但保持简洁不杂乱)---
-        const canvas = document.getElementById('bg-canvas');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x03050b);
-        scene.fog = new THREE.FogExp2(0x03050b, 0.012); // 轻微雾效，增加深邃感
-        
-        // 相机: 适合观看全貌
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0.8, 5.5);
-        camera.lookAt(0, 0, 0);
-        
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.toneMapping = THREE.ReinhardToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        
-        // --- 灯光系统 (干净高级) ---
-        // 环境光
-        const ambient = new THREE.AmbientLight(0x111122);
-        scene.add(ambient);
-        // 主光源方向光
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        mainLight.position.set(2, 3, 2);
-        scene.add(mainLight);
-        // 背光暖色补光
-        const backLight = new THREE.PointLight(0x4466cc, 0.6);
-        backLight.position.set(-1, 0.5, -3);
-        scene.add(backLight);
-        // 动态边缘光
-        const rimLight = new THREE.PointLight(0x88aaff, 0.5);
-        rimLight.position.set(1.5, 1, 2);
-        scene.add(rimLight);
-        
-        // --- 核心模型: 优雅环面结 (少即是多，材质高级)---
-        const geometry = new THREE.TorusKnotGeometry(0.95, 0.22, 200, 32, 3, 4);
-        const material = new THREE.MeshStandardMaterial({
-            color: 0x3a86ff,
-            emissive: 0x0a2350,
-            emissiveIntensity: 0.45,
-            metalness: 0.85,
-            roughness: 0.28,
-            flatShading: false
-        });
-        const knot = new THREE.Mesh(geometry, material);
-        scene.add(knot);
-        
-        // 半透明辅助线框 (提升科技感但不过度)
-        const wireframeMat = new THREE.MeshBasicMaterial({
-            color: 0x6ea8fe,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.2
-        });
-        const outerWire = new THREE.Mesh(new THREE.TorusKnotGeometry(1.02, 0.24, 200, 32, 3, 4), wireframeMat);
-        scene.add(outerWire);
-        
-        // 内部能量核 (小球体，呼吸光晕)
-        const coreMat = new THREE.MeshStandardMaterial({
-            color: 0xffaa44,
-            emissive: 0xff4422,
-            emissiveIntensity: 0.6,
-            metalness: 0.3,
-            roughness: 0.2
-        });
-        const coreSphere = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), coreMat);
-        scene.add(coreSphere);
-        
-        // 围绕主体的粒子光环 (简约精致)
-        const ringParticleCount = 800;
-        const ringGeo = new THREE.BufferGeometry();
-        const ringPositions = new Float32Array(ringParticleCount * 3);
-        const ringRadius = 1.4;
-        for (let i = 0; i < ringParticleCount; i++) {
-            const angle = (i / ringParticleCount) * Math.PI * 2;
-            const x = Math.cos(angle) * ringRadius;
-            const z = Math.sin(angle) * ringRadius;
-            const y = Math.sin(angle * 2) * 0.2;
-            ringPositions[i*3] = x;
-            ringPositions[i*3+1] = y;
-            ringPositions[i*3+2] = z;
-        }
-        ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
-        const ringPointsMat = new THREE.PointsMaterial({ color: 0x5dade2, size: 0.025, transparent: true, blending: THREE.AdditiveBlending });
-        const ringPoints = new THREE.Points(ringGeo, ringPointsMat);
-        scene.add(ringPoints);
-        
-        // 星空粒子背景 (简洁深邃)
-        const starCount = 1200;
-        const starGeo = new THREE.BufferGeometry();
-        const starPositions = new Float32Array(starCount * 3);
-        for (let i = 0; i < starCount; i++) {
-            starPositions[i*3] = (Math.random() - 0.5) * 180;
-            starPositions[i*3+1] = (Math.random() - 0.5) * 100;
-            starPositions[i*3+2] = (Math.random() - 0.5) * 70 - 30;
-        }
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.08, transparent: true, opacity: 0.5 });
-        const stars = new THREE.Points(starGeo, starMat);
-        scene.add(stars);
-        
-        // 额外悬浮粒子 (少量增加灵动感)
-        const dustCount = 1500;
-        const dustGeo = new THREE.BufferGeometry();
-        const dustPositions = new Float32Array(dustCount * 3);
-        for (let i = 0; i < dustCount; i++) {
-            dustPositions[i*3] = (Math.random() - 0.5) * 12;
-            dustPositions[i*3+1] = (Math.random() - 0.5) * 6;
-            dustPositions[i*3+2] = (Math.random() - 0.5) * 8 - 2;
-        }
-        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-        const dustMat = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.02, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-        const dustParticles = new THREE.Points(dustGeo, dustMat);
-        scene.add(dustParticles);
-        
-        // 增加一个极简的环形光环(扁平圆环)
-        const ringGlowGeo = new THREE.TorusGeometry(1.22, 0.02, 64, 300);
-        const glowMat = new THREE.MeshStandardMaterial({
-            color: 0x3a86ff,
-            emissive: 0x1a44aa,
-            emissiveIntensity: 0.5,
-            transparent: true,
-            opacity: 0.6
-        });
-        const halo = new THREE.Mesh(ringGlowGeo, glowMat);
-        scene.add(halo);
-        
-        // 动画变量
-        let time = 0;
-        
-        // 简单鼠标互动 (轻微旋转相机视角)
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetRotX = 0;
-        let targetRotY = 0;
-        let currentRotX = 0;
-        let currentRotY = 0;
-        
-        window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-            targetRotY = mouseX * 0.3;
-            targetRotX = mouseY * 0.15;
-        });
-        
-        // 按钮滚动逻辑 (整合的体验，点击滚动到下方内容)
-        const exploreBtn = document.getElementById('exploreBtn');
-        const insightSection = document.getElementById('insightSection');
-        const scrollHint = document.getElementById('scrollHint');
-        
-        function scrollToInsight() {
-            insightSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // 添加微光效反馈
-            if (exploreBtn) {
-                exploreBtn.style.transform = 'scale(0.98)';
-                setTimeout(() => { if(exploreBtn) exploreBtn.style.transform = ''; }, 200);
+            const knowledge = {
+                '网站介绍': '🌐 TIX 是一个面向未来的智能平台，提供正式版、测试版以及小游戏等多个入口。正式版稳定可靠，测试版则包含最新实验功能，小游戏即将上线。',
+                '版本区别': '🔄 正式版适合日常稳定使用；测试版包含前沿功能，可能存在不完善之处；小游戏为娱乐板块，当前为占位页面。',
+                '快速上手': '🚀 点击“正式版”卡片或底部Dock进入主站（需双击确认），即可开始体验完整功能。小游戏卡片同样可通过双击确认进入。',
+                '关于矽忈': '👤 矽忈是 TIX 团队的成员，也是抖音上的活跃创作者。点击右上角标签或底部Dock人物图标（双击确认）可访问他的抖音主页。',
+                'default': '感谢你的提问！你可以输入“网站介绍”“版本区别”“快速上手”或“关于矽忈”获取指引。'
+            };
+
+            function addMessage(text, type) {
+                const div = document.createElement('div');
+                div.className = 'msg ' + type;
+                div.textContent = text;
+                chatArea.appendChild(div);
+                chatArea.scrollTop = chatArea.scrollHeight;
             }
-        }
-        
-        if (exploreBtn) {
-            exploreBtn.addEventListener('click', scrollToInsight);
-        }
-        if (scrollHint) {
-            scrollHint.addEventListener('click', scrollToInsight);
-        }
-        
-        // 辅助: 呼吸灯效果和动画循环
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.012;
-            
-            // 核心模型旋转 (优雅匀速)
-            knot.rotation.y += 0.003;
-            knot.rotation.x += 0.002;
-            knot.rotation.z += 0.001;
-            outerWire.rotation.copy(knot.rotation);
-            
-            // 光环旋转
-            halo.rotation.z += 0.008;
-            halo.rotation.x = Math.sin(time * 0.5) * 0.1;
-            ringPoints.rotation.y += 0.005;
-            ringPoints.rotation.x = Math.sin(time * 0.7) * 0.1;
-            
-            // 核心球体脉动
-            const scalePulse = 1 + Math.sin(time * 6) * 0.03;
-            coreSphere.scale.set(scalePulse, scalePulse, scalePulse);
-            coreSphere.material.emissiveIntensity = 0.55 + Math.sin(time * 5) * 0.2;
-            
-            // 动态灯光柔和变色
-            rimLight.intensity = 0.55 + Math.sin(time * 1.2) * 0.2;
-            backLight.intensity = 0.6 + Math.sin(time * 0.8) * 0.15;
-            
-            // 星群缓慢自转
-            stars.rotation.y += 0.0002;
-            stars.rotation.x += 0.0001;
-            dustParticles.rotation.y += 0.0005;
-            dustParticles.rotation.x = Math.sin(time * 0.2) * 0.05;
-            
-            // 相机平滑跟随鼠标产生微动效果 (高端细腻)
-            currentRotX += (targetRotX - currentRotX) * 0.06;
-            currentRotY += (targetRotY - currentRotY) * 0.06;
-            // 计算相机位置偏移：保持中心看向原点
-            const radius = 5.2;
-            const camX = Math.sin(currentRotY) * radius * 0.5;
-            const camY = currentRotX * 1.2;
-            const camZ = radius + Math.abs(currentRotY) * 0.3;
-            camera.position.x += (camX - camera.position.x) * 0.05;
-            camera.position.y += (camY - camera.position.y) * 0.05;
-            camera.position.z += (camZ - camera.position.z) * 0.05;
-            camera.lookAt(0, 0, 0);
-            
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-        
-        // 窗口尺寸适配
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-        
-        // 小彩蛋控制台输出
-        console.log("%c⚡ MAKE FUTURE // 未来已至 ⚡", "color: #4A90E2; font-size: 14px; font-weight: bold;");
-        
-        // 简单优化：防止按钮出现聚焦闪烁
-        if(exploreBtn) exploreBtn.style.outline = 'none';
+
+            function respond(userText) {
+                if (!userText.trim()) return;
+                addMessage(userText, 'user');
+                const lower = userText.toLowerCase();
+                let answer = knowledge['default'];
+                if (lower.includes('介绍') || lower.includes('是什么')) answer = knowledge['网站介绍'];
+                else if (lower.includes('版本') || lower.includes('区别') || lower.includes('正式') || lower.includes('测试'))
+                    answer = knowledge['版本区别'];
+                else if (lower.includes('上手') || lower.includes('开始') || lower.includes('使用')) answer = knowledge['快速上手'];
+                else if (lower.includes('矽忈') || lower.includes('抖音') || lower.includes('xi')) answer = knowledge['关于矽忈'];
+
+                setTimeout(() => {
+                    addMessage(answer, 'ai');
+                }, 500 + Math.random() * 400);
+            }
+
+            sendBtn.addEventListener('click', () => {
+                const msg = chatInput.value;
+                chatInput.value = '';
+                respond(msg);
+            });
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const msg = chatInput.value;
+                    chatInput.value = '';
+                    respond(msg);
+                }
+            });
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    respond(chip.dataset.msg);
+                });
+            });
+            chatInput.focus();
+
+            // Dock 双击确认逻辑
+            const dockItems = document.querySelectorAll('.dock-item');
+            const tooltipEl = document.createElement('div');
+            tooltipEl.className = 'dock-tooltip';
+            document.getElementById('dockContainer').appendChild(tooltipEl);
+
+            let activeItem = null;
+            let activeTimer = null;
+            const DOUBLE_CLICK_WINDOW = 1800;
+
+            function showTooltip(item, text) {
+                const rect = item.getBoundingClientRect();
+                const dockRect = document.getElementById('dockContainer').getBoundingClientRect();
+                tooltipEl.textContent = text;
+                tooltipEl.style.left = (rect.left + rect.width/2 - dockRect.left) + 'px';
+                tooltipEl.classList.add('show');
+            }
+
+            function hideTooltip() {
+                tooltipEl.classList.remove('show');
+            }
+
+            function resetState() {
+                activeItem = null;
+                if (activeTimer) {
+                    clearTimeout(activeTimer);
+                    activeTimer = null;
+                }
+                hideTooltip();
+            }
+
+            function executeAction(item) {
+                const href = item.getAttribute('href');
+                if (href && item.tagName === 'A') {
+                    window.open(href, item.getAttribute('target') || '_blank', 'noopener,noreferrer');
+                } else if (item.id === 'aiDockBtn') {
+                    document.getElementById('aiSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                resetState();
+            }
+
+            dockItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const label = this.getAttribute('data-label') || '';
+                    
+                    if (activeItem === this) {
+                        executeAction(this);
+                    } else {
+                        resetState();
+                        activeItem = this;
+                        showTooltip(this, label);
+                        activeTimer = setTimeout(() => {
+                            resetState();
+                        }, DOUBLE_CLICK_WINDOW);
+                    }
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dock-item')) {
+                    resetState();
+                }
+            });
+        })();
     </script>
 </body>
 </html>
